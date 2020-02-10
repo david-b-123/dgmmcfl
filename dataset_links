@@ -1,0 +1,35 @@
+Viroli and McLachlan benchmark datasets
+Wine
+https://archive.ics.uci.edu/ml/datasets/Wine
+
+Olive Oil
+https://www.rdocumentation.org/packages/pdfCluster/versions/1.0-3/topics/oliveoil
+
+Ecoli
+https://archive.ics.uci.edu/ml/datasets/ecoli
+
+Vehicle
+https://archive.ics.uci.edu/ml/datasets/Statlog+(Vehicle+Silhouettes)
+
+Satellite
+https://archive.ics.uci.edu/ml/datasets/Statlog+(Landsat+Satellite)
+
+
+
+
+Single Cell Gene Expression Datasets 
+
+Goolam et al
+https://hemberg-lab.github.io/scRNA.seq.datasets/mouse/edev/#goolam
+
+Darmanis et al
+https://hemberg-lab.github.io/scRNA.seq.datasets/human/brain/#darmanis
+
+Li et al
+https://hemberg-lab.github.io/scRNA.seq.datasets/human/tissues/	
+
+Yan et al
+https://hemberg-lab.github.io/scRNA.seq.datasets/human/edev/
+
+Deng et al
+https://hemberg-lab.github.io/scRNA.seq.datasets/mouse/edev/#deng
