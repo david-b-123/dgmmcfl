@@ -4,8 +4,6 @@ A model-based method capable of unifying dimensionality reduction, unsupervised 
 
 This is a culmination of my Thesis project for the Master in Science (Statistics), supervised by Professor Geoffrey McLachlan.
 
-My Thesis is also attached here.
-
 
 
 It is based on the following work, so please reference the following:
