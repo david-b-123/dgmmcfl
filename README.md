@@ -1,5 +1,12 @@
 # dgmmcfl
 Deep Gaussian Mixture Models with Common Factor Loadings
+A model-based visualisation, dimensionality reduction and clustering method.
+
+This is a culmination of my Thesis project for the Master in Science (Statistics), supervised by Professor Geoffrey McLachlan.
+
+My Thesis is also attached here.
+
+
 
 It is based on the following work, so please reference the following:
 
