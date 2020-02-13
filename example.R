@@ -92,13 +92,15 @@ dgmm.icfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds =
 dgmm.hmcfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.hmcfl',scale = T)
 
 
-# These scores iterate over all dimensions of the latent factor scores to find the best BIC fit.
+# The above methods iterate over all dimensions of the latent factor scores to find the best BIC fit.
 # Thus, it is possible to receive a plotting dimension of 1, which is of course unsuitable
 
 # To plot the last layer onto two dimensions, set the following:
 # r = c(R1, 2) for 2 layers
 # r = c(R1, R2, 2) for 3 layers
 # r = c(R1, R2, R3, 2) for 4 layers
+
+# See below for an implementation
 
 bic.best <- Inf
 aic.best <- Inf
