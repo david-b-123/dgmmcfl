@@ -1,6 +1,6 @@
 deepgmm_mcfa <- function(y, layers, k, r,
-            it = 250, eps = 0.001, init = 'kmeans', init_est = 'factanal', method='dgmm',scale=F) {
-
+                         it = 250, eps = 0.001, init = 'kmeans', init_est = 'factanal', method='dgmm',scale=F) {
+  
   if (any(tolower(init) == c('kmeans', 'k-means', 'k')))
     init <- 'kmeans'
   if (any(tolower(init) == c('random', 'r')))
@@ -10,10 +10,11 @@ deepgmm_mcfa <- function(y, layers, k, r,
   if (any(tolower(init_est) == c('factanal', 'factana', 'fact', 'f')))
     init_est <- 'factanal'
   if (class(y) == 'data.frame')
-  	y <- as.matrix(y)
+    y <- as.matrix(y)
   if (scale==T){
     y <- apply(y,2,function(X){scale(X,center=T,scale=T)})
   }
+  
   
   # check arguments
   tmp <- valid_args(Y = y, layers = layers, k = k, r = r, it = it,
@@ -55,7 +56,7 @@ deepgmm_mcfa <- function(y, layers, k, r,
       mu <- matrix(0, r[i], k[i])
       
       if (init_est == "factanal") {
-
+        
         i_lst <- factanal_para(data, s, k, r, i, numobs)
         
         lst$w[i] <- list(i_lst$w)
@@ -114,9 +115,7 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output$call <- match.call()
     class(output) <- "dgmm.cfl"
     
-    invisible(output)
-  }
-  
+    return(output)
   }
   if (method=="dgmm.hmcfl"){
     
@@ -164,7 +163,6 @@ deepgmm_mcfa <- function(y, layers, k, r,
         z <- i_lst$z
         
         
-        # i_lst<-EMMIXmfa::mcfa(Y = data,g = k[i],q = r[i+1],init_clust = as.factor(s),init_method = "gmf",itmax = 10,nkmeans = 35,nrandom = 35)
         xi <- array(NA, c(r[i+1], k[i]))
         omega <- array(NA, c(r[i+1], r[i+1], k[i]))
         D <- array(NA, c(r[i], r[i], k[i]))
@@ -203,7 +201,7 @@ deepgmm_mcfa <- function(y, layers, k, r,
     
     
     ##########################################################
-
+    
     if (layers == 2) {
       out <- deepgmm_hmcfl_sem.alg.2(y = y, numobs = numobs, p = p, r = r, k = k, A.list = lst$A, D.list = lst$D, D.list.inv = lst$D.inv, xi.list = lst$xi, omega.list = lst$omega, w.list = lst$w, it = it, eps = eps)
     }
@@ -221,11 +219,10 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output$call <- match.call()
     class(output) <- "dgmm.hmcfl"
     
-    invisible(output)
+    return(output)
     
   }
   if (method=="dgmm.icfl"){
-    
     # Initialing parameters
     lst <- list(w = list(), H = list(), mu = list(), psi = list(),
                 psi.inv = list(), A = list(), xi = list(), omega = list(), D = list(), D.inv = list(), K = list())
@@ -252,22 +249,20 @@ deepgmm_mcfa <- function(y, layers, k, r,
         }
       }
       
-      psi <- psi.inv <- array(0, c(k[i], r[i], r[i]))
-      H <- array(0, c(k[i], r[i], r[i + 1]))
-      mu <- matrix(0, r[i], k[i])
       
       if (init_est == "factanal") {
         # initialize parameters using factor analysis of covariance matrix
         
-        i_lst <- factanal_para(data, s, k, r, i, numobs)
+        i_lst <- factanal_para_dgmm.icfl(data, s, k, r, i, numobs)
         
         lst$w[i] <- list(i_lst$w)
         lst$H[i] <- list(i_lst$H)
         lst$mu[i] <- list(i_lst$mu)
         lst$psi[i] <- list(i_lst$psi)
         lst$psi.inv[i] <- list(i_lst$psi.inv)
-        z <- array(i_lst$z,dim=c(numobs,r[i+1]))
+        z <- i_lst$z
         
+        # i_lst<-EMMIXmfa::mcfa(Y = data,g = k[i],q = r[i+1],init_clust = as.factor(s),init_method = "gmf",itmax = 10,nkmeans = 25,nrandom = 25)
         lst$A[i] <- list(i_lst$H[,,1])
         xi_check <- array(0,dim=c(r[i+1],k[i]))
         omega_check <- array(0,dim=c(r[i+1],r[i+1],k[i]))
@@ -289,19 +284,24 @@ deepgmm_mcfa <- function(y, layers, k, r,
         lst$D[i] <- list(i_lst$psi)
         lst$D.inv[i] <- list(i_lst$psi.inv)
         
+        
+        
+      } 
     }
-
     
     ##########################################################
+
     if (layers == 2) {
-      out <- deep.sem.alg.2(y = y, numobs = numobs, p = p, r = r, k = k, A.list = lst$A, D.list = lst$D, D.list.inv = lst$D.inv, xi.list = lst$xi, omega.list = lst$omega, w.list = lst$w, mu.list = lst$mu, H.list=lst$H, psi.list = lst$psi, it = it, eps = eps)
+      out <- deepgmm_icfl_sem.alg.2(y = y, numobs = numobs, p = p, r = r, k = k, A.list = lst$A, D.list = lst$D, D.list.inv = lst$D.inv, xi.list = lst$xi, omega.list = lst$omega, w.list = lst$w, mu.list = lst$mu, H.list=lst$H, psi.list = lst$psi, it = it, eps = eps)
     }
     if (layers == 3) {
-      out <- deep.sem.alg.3(y = y, numobs = numobs, p = p, r = r, k = k, A.list = lst$A, D.list = lst$D, D.list.inv = lst$D.inv, xi.list = lst$xi, omega.list = lst$omega, w.list = lst$w, mu.list = lst$mu, H.list=lst$H, psi.list = lst$psi, it = it, eps = eps)
+      out <- deepgmm_icfl_sem.alg.3(y = y, numobs = numobs, p = p, r = r, k = k, A.list = lst$A, D.list = lst$D, D.list.inv = lst$D.inv, xi.list = lst$xi, omega.list = lst$omega, w.list = lst$w, mu.list = lst$mu, H.list=lst$H, psi.list = lst$psi, it = it, eps = eps)
+
     }
     if (layers == 4) {
-      out <- deep.sem.alg.4(y = y, numobs = numobs, p = p, r = r, k = k, A.list = lst$A, D.list = lst$D, D.list.inv = lst$D.inv, xi.list = lst$xi, omega.list = lst$omega, w.list = lst$w, mu.list = lst$mu, H.list=lst$H, psi.list = lst$psi, it = it, eps = eps)
+      out <- deepgmm_icfl_sem.alg.4(y = y, numobs = numobs, p = p, r = r, k = k, A.list = lst$A, D.list = lst$D, D.list.inv = lst$D.inv, xi.list = lst$xi, omega.list = lst$omega, w.list = lst$w, mu.list = lst$mu, H.list=lst$H, psi.list = lst$psi, it = it, eps = eps)
     }
+    
     
     out$lik <- out$likelihood
     output <- out[c("A", "w", "xi", "omega","D", 'mu','psi', 'H',"lik", "bic", "aic", "clc",
@@ -310,8 +310,9 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output$call <- match.call()
     class(output) <- "dgmm.icfl"
     
-    invisible(output)
+    return(output)
   }
+  
   if (method=="dgmm"){
     
     # Initialing parameters
@@ -391,8 +392,7 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output$call <- match.call()
     class(output) <- "dgmm"
     
-    invisible(output)
-  }  
-
-
+    return(output)
+  }
+  
 }

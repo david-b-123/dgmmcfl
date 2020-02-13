@@ -1,4 +1,4 @@
-deepgmm_icfl_compute.lik <- function(y, numobs, k, xi.list, A.list, D.list, omega.list, w.list, mu.list, H.list, psi.list) {
+deepgmm_icfl_compute.lik <- function(y, numobs, k, r, xi.list, A.list, D.list, omega.list, w.list, mu.list, H.list, psi.list) {
   
   layers <- length(k)
   p <- ncol(y)
@@ -21,8 +21,8 @@ deepgmm_icfl_compute.lik <- function(y, numobs, k, xi.list, A.list, D.list, omeg
   for (i in 1 : tot.k)  {
     
     mu.tot <- mu.list[[2]][, k.comb[i, 2]]
-    
-    var.tot <- psi.list[[2]][,, k.comb[i, 2]] + H.list[[2]][,,k.comb[i, 2] ] %*% t(H.list[[2]][,, k.comb[i, 2]])
+
+    var.tot <- psi.list[[2]][,, k.comb[i, 2]] + matrix(H.list[[2]][,,k.comb[i, 2] ],nrow = r[2],ncol=r[3]) %*% t(matrix(H.list[[2]][,,k.comb[i, 2] ],nrow = r[2],ncol=r[3]))
     
     w.tot <- w.list[[1]][k.comb[i, 1]] * w.list[[2]][k.comb[i, 2]]
     

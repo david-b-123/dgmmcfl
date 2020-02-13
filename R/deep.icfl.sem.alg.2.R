@@ -9,7 +9,7 @@ deepgmm_icfl_sem.alg.2 <- function(y, numobs, p, r, k, A.list, D.list,
   #################################
   #### compute the likelihood #####
   #################################
-  out <- deepgmm_icfl_compute.lik(y, numobs, k, xi.list, A.list, D.list, omega.list, w.list,mu.list,H.list,psi.list)
+  out <- deepgmm_icfl_compute.lik(y, numobs, k, r, xi.list, A.list, D.list, omega.list, w.list,mu.list,H.list,psi.list)
   py <- out$py
   ps.y <- out$ps.y
   ps.y.list <- out$ps.y.list
@@ -232,7 +232,7 @@ deepgmm_icfl_sem.alg.2 <- function(y, numobs, p, r, k, A.list, D.list,
     }
     
     z.list[[l]] <- aperm(z.one, c(3, 1, 2))
-    out <- compute.est(k = k[l], p = r[l], qq = r[l + 1], ps.y = ps.y.list[[l]], y = yy, Ez = aperm(z, c(3, 1, 2)), Ezz = aperm(zz, c(4, 2, 3, 1)), mu = mu.list[[l]])
+    out <- compute.est_dgmm.icfl(k = k[l], p = r[l], qq = r[l + 1], ps.y = ps.y.list[[l]], y = yy, Ez = aperm(z, c(3, 1, 2)), Ezz = aperm(zz, c(4, 2, 3, 1)), mu = mu.list[[l]])
 
     
     H.list[[l]] <- out$H
@@ -240,7 +240,7 @@ deepgmm_icfl_sem.alg.2 <- function(y, numobs, p, r, k, A.list, D.list,
     mu.list[[l]] <- out$mu
     w.list[[l]] <- out$w
     
-    out <- deepgmm_icfl_compute.lik(y = y, numobs = numobs, k = k, xi.list = xi.list,A.list =  A.list, D.list = D.list,omega.list =  omega.list, w.list = w.list, mu.list, H.list, psi.list)
+    out <- deepgmm_icfl_compute.lik(y = y, numobs = numobs, k = k, r, xi.list = xi.list,A.list =  A.list, D.list = D.list,omega.list =  omega.list, w.list = w.list, mu.list, H.list, psi.list)
     # y = y; numobs = numobs; k = k; xi.list = xi.list;A.list =  A.list; D.list = D.list;omega.list =  omega.list; w.list = w.list; mu.list=mu.list; H.list=H.list; psi.list=psi.list
     py <- out$py
     ps.y <- out$ps.y
@@ -292,17 +292,16 @@ deepgmm_icfl_sem.alg.2 <- function(y, numobs, p, r, k, A.list, D.list,
   #     h <- h - (r[j] * k[j] * (r[j] - 1) / 2)
   #   }
   # }
-  
   bic <- -2 * lik + h * log(numobs)
   aic <- -2 * lik + 2 * h
   EN <- entr(ps.y.list[[2]])
   clc <- -2 * lik + 2 * EN
   icl.bic <- -2 * lik + 2 * EN + h * log(numobs)
   # print(c(hh,bic,adjustedRandIndex(labels,s[,column])))
-  
+
   out <- list(A = list(A = A.list), w = list(w = w.list), xi = list(xi = xi.list), omega= list(omega=omega.list), 
               D = list(D = D.list), mu = list(mu=mu.list), psi = list(psi=psi.list), H = list(H=H.list), 
               likelihood = likelihood, bic = bic, aic = aic, clc = clc,
-              s = s, icl_bic = icl.bic, h = h, ps.y = ps.y)
+              s = s, icl_bic = icl.bic, h = h)
   return(out)
 }

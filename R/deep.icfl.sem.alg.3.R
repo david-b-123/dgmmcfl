@@ -242,7 +242,7 @@ while ((hh < it) & (ratio > eps )) {
   }
   
   z.list[[l]] <- aperm(z.one, c(3, 1, 2))
-  out  <- compute.est(k[l], r[l], r[l +1 ], ps.y.list[[l]], yy,
+  out  <- compute.est_dgmm.icfl(k[l], r[l], r[l +1 ], ps.y.list[[l]], yy,
                       aperm(z, c(3, 1, 2)), aperm(zz, c(4, 2, 3, 1)), mu.list[[l]])
   
   H.list[[l]] <- out$H
@@ -288,7 +288,7 @@ while ((hh < it) & (ratio > eps )) {
   }
   
   z.list[[l]] <- aperm(z.one, c(3, 1, 2))
-  out <- compute.est(k[l], r[l], r[l + 1], ps.y.list[[l]], yy,
+  out <- compute.est_dgmm.icfl(k[l], r[l], r[l + 1], ps.y.list[[l]], yy,
                      aperm(z, c(3, 1, 2)), aperm(zz, c(4, 2, 3, 1)), mu.list[[l]])
   
   H.list[[l]] <- out$H
