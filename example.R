@@ -9,7 +9,7 @@ library(corpcor)
 library(mvtnorm)
 
 # path_to : path to the "R" directory in github download
-path_to<-"~~~~~~~~~~~~~~~~~~~~~/dgmmcfl-master/R/"
+path_to<-"/home/davb/Documents/Samsung_T5/2019_11_21_Deep_Statistical_Models/test_code/dgmmcfl-master/R/"
 
 
 
@@ -57,10 +57,10 @@ pearson<- cor(data.frame(dataset_aim))
 spearman<- cor(data.frame(dataset_aim),method = "spearman")
 euclidean<- dist(t(data.frame(dataset_aim)),diag = T,upper = T)
 
-phi_results<-eigen(phis)$vectors[,c(1:10)]
-pea_results<-eigen(pearson)$vectors[,c(1:10)]
-spe_results<-eigen(spearman)$vectors[,c(1:10)]
-euc_results<-eigen(euclidean)$vectors[,c(1:10)]
+phi_results<-eigen(phis)$vectors[,c(1:5)]
+pea_results<-eigen(pearson)$vectors[,c(1:5)]
+spe_results<-eigen(spearman)$vectors[,c(1:5)]
+euc_results<-eigen(euclidean)$vectors[,c(1:5)]
 
 # DGMM methods requires a dataframe
 y<-data.frame(phi_results,pea_results,spe_results,euc_results)
@@ -73,11 +73,11 @@ y<-data.frame(phi_results,pea_results,spe_results,euc_results)
 
 # Run DGMM - THIS MODEL CANNOT BE VISUALISED
 # Possible Layers = {1,2,3}
-dgmm_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm',scale = T)
+dgmm_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 1,it = 1,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm',scale = T)
 
 # RUN DGMM-CFL - ALL LAYERS CAN BE VISUALISED 
 # Possible Layers = {2,3,4}
-dgmm.cfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.cfl',scale = T)
+dgmm.cfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 1,it = 1,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.cfl',scale = T)
 
 # RUN DGMM-ICFL - ONLY FIRST LAYER CAN BE VISUALISED
 # Possible Layers = {2,3,4}
@@ -88,141 +88,42 @@ dgmm.icfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds =
 dgmm.hmcfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.hmcfl',scale = T)
 
 
-# dgmm_model cannot be visualised
-# dgmm.cfl can have all layers be visualised
-# dgmm.icfl can only have first layer visualised
-# dgmm.hmcfl can only have first layer visualised
+# These scores iterate over all dimensions of the latent factor scores to find the best BIC fit.
+# Thus, it is possible to receive a plotting dimension of 1, which is of course unsuitable
 
-# PLOT DGMM.CFL
-dgmm_plotting<- dgmm.cfl_model$fit
+# To plot the last layer onto two dimensions, set the following:
+# r = c(R1, 2) for 2 layers
+# r = c(R1, R2, 2) for 3 layers
+# r = c(R1, R2, R3, 2) for 4 layers
 
-k<-dgmm_plotting$k
-r<-dgmm_plotting$r
+bic.best <- Inf
+aic.best <- Inf
 
-A1<-dgmm_plotting$A$A[[1]]
-D1<-dgmm_plotting$D$D[[1]]
-xi1<-dgmm_plotting$xi$xi[[1]]
-omega1<-dgmm_plotting$omega$omega[[1]]
-w1<-dgmm_plotting$w$w[[1]]
+seed_setting=50
+K1=3
+R1=6
 
-u11=0
-for (i in 1:k[1]){
-  gamma1=ginv(A1%*%omega1[,,i]%*%t(A1)+D1[,,i])%*%A1%*%omega1[,,i]
-  u11<-u11+(w1[i]*(c(xi1[,i])+t(gamma1)%*%t(as.matrix(y)-c(A1%*%c(xi1[,i])))))
+# Run to completion
+for (k1 in 1:K1){ # iterate from 1 to 3 mixtures
+  for (r1 in 3:R1){ # iterate from 3 to 7 - cannot work on a dataset with 3 or less dimensions
+    for (seed in 1:seed_setting){ # run EM algorithm - it does not guarantee global optima, and so the best BIC will be chosen
+      
+      print(paste("Seed: ",seed,"/",seed_setting, "   | | |   ","Mixture models searched: ",k1,"/",K1,"   | | |   ","Latent dimensions searched: ",r1-2,"/",R1-2,  sep=""))
+      set.seed(seed)
+      out <- try(deepgmm_mcfa(y,layers = 2,k = c(k1,length(unique(labels))),r = c(r1,2),it = 150,eps = 10E-5,method = "dgmm.cfl",scale = T),silent=F)
+      
+      if (!is.character(out)) {
+        if (out$bic < bic.best) {
+          out.best <- out
+          bic.best <- out$bic
+          
+          par(mfcol=c(1,2))
+          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="True Labels")
+          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM labels")
+
+        }
+        
+      }
+    }
+  }
 }
-
-
-A2<-dgmm_plotting$A$A[[2]]
-D2<-dgmm_plotting$D$D[[2]]
-xi2<-dgmm_plotting$xi$xi[[2]]
-omega2<-dgmm_plotting$omega$omega[[2]]
-w2<-dgmm_plotting$w$w[[2]]
-
-
-u21=0
-for (i in 1:k[2]){
-  gamma2=ginv(A2%*%omega2[,,i]%*%t(A2)+D2[,,i])%*%A2%*%omega2[,,i]
-  u21<-u21+(w2[i]*(c(xi2[,i])+t(gamma2)%*%(as.matrix(u11)-c(A2%*%c(xi2[,i])))))
-}
-
-# This will plot all the dimensions
-plot(data.frame(t(u11)),col=as.factor(labels))
-plot(data.frame(t(u21)),col=as.factor(labels))
-
-# UMAP
-# Further visualisation of factor scores
-plot(umap::umap(t(u21))$layout,col=as.factor(labels)) # DGMM-HMCFL
-# Compared to original data
-plot(umap::umap(y)$layout,col=as.factor(labels)) # tSNE
-
-
-
-# tSNE
-# Further visualisation of factor scores 
-plot(tsne::tsne(t(u21),k=2),col=as.factor(labels)) # DGMM-HMCFL
-# Compared to original data
-plot(tsne::tsne(y,k=2),col=as.factor(labels)) # tSNE
-
-
-
-
-
-
-# PLOT DGMM.ICFL
-dgmm_plotting<- dgmm.icfl_model$fit
-
-k<-dgmm_plotting$k
-r<-dgmm_plotting$r
-
-A1<-dgmm_plotting$A$A[[1]]
-D1<-dgmm_plotting$D$D[[1]]
-xi1<-dgmm_plotting$xi$xi[[1]]
-omega1<-dgmm_plotting$omega$omega[[1]]
-w1<-dgmm_plotting$w$w[[1]]
-
-u11=0
-for (i in 1:k[1]){
-  gamma1=ginv(A1%*%omega1[,,i]%*%t(A1)+D1[,,i])%*%A1%*%omega1[,,i]
-  u11<-u11+(w1[i]*(c(xi1[,i])+t(gamma1)%*%t(as.matrix(y)-c(A1%*%c(xi1[,i])))))
-}
-
-# This will plot all the dimensions
-plot(data.frame(t(u11)),col=as.factor(labels))
-
-
-# UMAP
-# Further visualisation of factor scores
-plot(umap::umap(t(u21))$layout,col=as.factor(labels)) # DGMM-HMCFL
-# Compared to original data
-plot(umap::umap(y)$layout,col=as.factor(labels)) # tSNE
-
-
-
-# tSNE
-# Further visualisation of factor scores 
-plot(tsne::tsne(t(u21),k=2),col=as.factor(labels)) # DGMM-HMCFL
-# Compared to original data
-plot(tsne::tsne(y,k=2),col=as.factor(labels)) # tSNE
-
-
-
-
-
-# PLOT DGMM.HMCFL
-dgmm_plotting<- dgmm.hmcfl_model$fit
-
-k<-dgmm_plotting$k
-r<-dgmm_plotting$r
-
-A1<-dgmm_plotting$A$A[[1]][,,1]
-D1<-dgmm_plotting$D$D[[1]]
-xi1<-dgmm_plotting$xi$xi[[1]]
-omega1<-dgmm_plotting$omega$omega[[1]]
-w1<-dgmm_plotting$w$w[[1]]
-
-u11=0
-for (i in 1:k[1]){
-  gamma1=ginv(A1%*%omega1[,,i]%*%t(A1)+D1[,,i])%*%A1%*%omega1[,,i]
-  u11<-u11+(w1[i]*(c(xi1[,i])+t(gamma1)%*%t(as.matrix(y)-c(A1%*%c(xi1[,i])))))
-}
-
-# This will plot all the dimensions
-plot(data.frame(t(u11)),col=as.factor(labels))
-
-
-# UMAP
-# Further visualisation of factor scores
-plot(umap::umap(t(u21))$layout,col=as.factor(labels)) # DGMM-HMCFL
-# Compared to original data
-plot(umap::umap(y)$layout,col=as.factor(labels)) # tSNE
-
-
-
-# tSNE
-# Further visualisation of factor scores 
-plot(tsne::tsne(t(u21),k=2),col=as.factor(labels)) # DGMM-HMCFL
-# Compared to original data
-plot(tsne::tsne(y,k=2),col=as.factor(labels)) # tSNE
-
-
-

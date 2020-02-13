@@ -115,6 +115,9 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output$call <- match.call()
     class(output) <- "dgmm.cfl"
     
+    output$factor_scores <- extract_scores(y, output, method = class(output), plot = F )
+    output$clusters <- extract_clusters(output, method = class(output) )
+    
     return(output)
   }
   if (method=="dgmm.hmcfl"){
@@ -219,8 +222,11 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output$call <- match.call()
     class(output) <- "dgmm.hmcfl"
     
-    return(output)
     
+    output$factor_scores <- extract_scores(y, output, method = class(output), plot = F )
+    output$clusters <- extract_clusters(output, method = class(output) )
+    
+    return(output)
   }
   if (method=="dgmm.icfl"){
     # Initialing parameters
@@ -310,6 +316,9 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output$call <- match.call()
     class(output) <- "dgmm.icfl"
     
+    output$factor_scores <- extract_scores(y, output, method = class(output), plot = F )
+    output$clusters <- extract_clusters(output, method = class(output) )
+    
     return(output)
   }
   
@@ -391,8 +400,9 @@ deepgmm_mcfa <- function(y, layers, k, r,
     output <- c(output, list(k = k, r = r[-1], numobs = numobs, layers = layers))
     output$call <- match.call()
     class(output) <- "dgmm"
-    
     return(output)
+    
   }
+  
   
 }

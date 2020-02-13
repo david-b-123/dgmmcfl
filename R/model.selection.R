@@ -92,6 +92,7 @@ model_selection <- function (y, layers, g, seeds = 3, it = 50, eps = 0.001,
         }))
       }))
     
+    k<-unique(k)
     
     bic <- array(NA, c(seeds, nrow(k), nrow(r)))
     bic.best <- Inf
@@ -168,6 +169,8 @@ model_selection <- function (y, layers, g, seeds = 3, it = 50, eps = 0.001,
           }))
         }))
       }))
+    
+    k<-unique(k)
     
     bic <- array(NA, c(seeds, nrow(k), nrow(r)))
     bic.best <- Inf
@@ -248,6 +251,8 @@ model_selection <- function (y, layers, g, seeds = 3, it = 50, eps = 0.001,
         }))
       }))
     
+    k<-unique(k)
+    
     bic <- array(NA, c(seeds, nrow(k), nrow(r)))
     bic.best <- Inf
     aic <- array(NA, c(seeds, nrow(k), nrow(r)))
@@ -295,6 +300,8 @@ model_selection <- function (y, layers, g, seeds = 3, it = 50, eps = 0.001,
                ", AIC: ", round(out.best$aic, 2)))
     
   }
+  
+  
   
   out <- list(fit = out.best, bic = bic, aic = aic)
   invisible(out)
