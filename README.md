@@ -1,8 +1,6 @@
 # dgmmcfl
 Deep Gaussian Mixture Models with Common Factor Loadings
 
-Note, this is unpublished work.
-
 It is based on the following work, so please reference the following:
 
 https://github.com/suren-rathnayake/deepgmm/blob/master/
