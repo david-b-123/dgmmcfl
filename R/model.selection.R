@@ -265,7 +265,7 @@ model_selection <- function (y, layers, g, seeds = 3, it = 50, eps = 0.001,
           print(paste("Seed: ",i,"/",seeds, "   | | |   ","Mixture models searched: ",kk,"/",nrow(k),"   | | |   ","Latent dimensions searched: ",rr,"/",nrow(r),  sep=""))
 
           set.seed(i)
-          out <- try(deepgmm_mcfa(y, 3, k[kk, ], r[rr, ], it = it, eps = eps,
+          out <- try(deepgmm_mcfa(y, 4, k[kk, ], r[rr, ], it = it, eps = eps,
                                   init = init, init_est = init_est, method = method, scale = scale ))
           if (!is.character(out)) {
             if (criterion=="BIC")
