@@ -15,4 +15,6 @@ https://github.com/suren-rathnayake/EMMIXmfa
 
 [Viroli, C. and McLachlan, G.J. (2019). Deep Gaussian mixture models. Statistics and Computing 29, 43-51.](https://link.springer.com/article/10.1007/s11222-017-9793-z)
 
+[Baek J., McLachlan G. J., Flack L. K. (2010). Mixtures of Factor Analyzers with Common Factor Loadings: Applications to the Clustering and Visualization of High-Dimensional Data. IEEE Transactions on Pattern Analysis and Machine Intelligence 32, 7, 1298-1309.](https://ieeexplore.ieee.org/document/5184847)
+
 ![](goolam_et_al.png)
