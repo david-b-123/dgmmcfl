@@ -13,7 +13,7 @@ library(tsne)
 library(umap)
 
 # path_to : path to the "R" directory in github download
-path_to<-"/home/davb/Documents/Samsung_T5/2019_11_21_Deep_Statistical_Models/test_code/dgmmcfl-master/R/"
+path_to<-"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/dgmmcfl-master/R/"
 
 
 
@@ -139,7 +139,7 @@ for (k1 in 1:K1){ # iterate from 1 to 3 mixtures
 par(mfrow=c(2,2))
 plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with True Labels")
 plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with Predicted labels")
-plot(umap::umap(y)$layout,main="UMAP",col=as.factor(labels),xlab="Score 1", ylab="Score 2")
-plot(tsne::tsne(y),main="tSNE",col=as.factor(labels),xlab="Score 1", ylab="Score 2") # try with different perplexity scores
+plot(umap::umap(y)$layout,main="UMAP with True Labels",col=as.factor(labels),xlab="Score 1", ylab="Score 2")
+plot(tsne::tsne(y),main="tSNE with True Labels",col=as.factor(labels),xlab="Score 1", ylab="Score 2") # try with different perplexity scores
 
 
