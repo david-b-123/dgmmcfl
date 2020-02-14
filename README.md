@@ -14,3 +14,5 @@ https://github.com/suren-rathnayake/deepgmm/blob/master/
 https://github.com/suren-rathnayake/EMMIXmfa
 
 [Viroli, C. and McLachlan, G.J. (2019). Deep Gaussian mixture models. Statistics and Computing 29, 43-51.](https://link.springer.com/article/10.1007/s11222-017-9793-z)
+
+![](goolam_et_al.png)
