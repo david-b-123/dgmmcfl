@@ -17,7 +17,7 @@ https://github.com/suren-rathnayake/EMMIXmfa
 
 [Baek J., McLachlan G. J., Flack L. K. (2010). Mixtures of Factor Analyzers with Common Factor Loadings: Applications to the Clustering and Visualization of High-Dimensional Data. IEEE Transactions on Pattern Analysis and Machine Intelligence 32, 7, 1298-1309.](https://ieeexplore.ieee.org/document/5184847)
 
-It compares well on small datasets, although it still remains untested for larger datasets. I have run it on a few public single-cell datasets, and so, this would be useful as a complementary tool.
+It compares well on small datasets, although it still remains untested for larger datasets. I have run it on a few public single-cell datasets, and so, this could be useful as a complementary tool.
 
 Let me know how it runs. 
 
