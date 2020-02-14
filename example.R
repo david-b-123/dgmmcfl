@@ -61,10 +61,10 @@ pearson<- cor(data.frame(dataset_aim))
 spearman<- cor(data.frame(dataset_aim),method = "spearman")
 euclidean<- dist(t(data.frame(dataset_aim)),diag = T,upper = T)
 
-phi_results<-eigen(phis)$vectors[,c(1:10)]
-pea_results<-eigen(pearson)$vectors[,c(1:10)]
-spe_results<-eigen(spearman)$vectors[,c(1:10)]
-euc_results<-eigen(euclidean)$vectors[,c(1:10)]
+phi_results<-eigen(phis)$vectors[,c(1:5)]
+pea_results<-eigen(pearson)$vectors[,c(1:5)]
+spe_results<-eigen(spearman)$vectors[,c(1:5)]
+euc_results<-eigen(euclidean)$vectors[,c(1:5)]
 
 # DGMM methods requires a dataframe
 y<-data.frame(phi_results,pea_results,spe_results,euc_results)
@@ -107,7 +107,7 @@ aic.best <- Inf
 
 seed_setting=100
 K1=3
-R1=6
+R1=8
 
 # Run to completion
 for (k1 in 1:K1){ # iterate from 1 to 3 mixtures
@@ -124,8 +124,8 @@ for (k1 in 1:K1){ # iterate from 1 to 3 mixtures
           bic.best <- out$bic
           
           par(mfcol=c(1,2))
-          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="True Labels")
-          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM labels")
+          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with True Labels")
+          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with Predicted labels")
 
         }
         
@@ -137,8 +137,8 @@ for (k1 in 1:K1){ # iterate from 1 to 3 mixtures
 
 # For comparison
 par(mfrow=c(2,2))
-plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="True Labels")
-plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM labels")
+plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with True Labels")
+plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with Predicted labels")
 plot(umap::umap(y)$layout,main="UMAP",col=as.factor(labels),xlab="Score 1", ylab="Score 2")
 plot(tsne::tsne(y),main="tSNE",col=as.factor(labels),xlab="Score 1", ylab="Score 2") # try with different perplexity scores
 
