@@ -36,10 +36,30 @@ deepgmm_mcfa <- function(y, layers, k, r,
       if (i == 1) {
         
         data <- y
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+        
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
+        
       } else {
         
         data <- z[, 1 : r[i], drop = FALSE]
+        
+        
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
       }
+      print(r)
+
+
       
       # provide initial parititioning of the observations
       s <- initial_clustering(data, k, i, init)
@@ -132,10 +152,28 @@ deepgmm_mcfa <- function(y, layers, k, r,
       if (i == 1) {
         
         data <- y
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+        
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
+        
       } else {
         
         data <- z[, 1 : r[i], drop = FALSE]
+        
+        
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
       }
+      print(r)
       
       # provide initial parititioning of the observations
       s <- initial_clustering(data, k, i, init)
@@ -239,10 +277,28 @@ deepgmm_mcfa <- function(y, layers, k, r,
       if (i == 1) {
         
         data <- y
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+        
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
+        
       } else {
         
         data <- z[, 1 : r[i], drop = FALSE]
+        
+        
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
       }
+      print(r)
       
       # provide initial parititioning of the observations
       s <- initial_clustering(data, k, i, init)
@@ -332,10 +388,29 @@ deepgmm_mcfa <- function(y, layers, k, r,
       if (i == 1) {
         
         data <- y
+        
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+        
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
+        
       } else {
         
         data <- z[, 1 : r[i], drop = FALSE]
+        
+        
+        results<-eigen(cov(data)*dim(data)[1])
+        q<-((results$values)-((sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))^2))/(sqrt(dim(data)[1]-1)+sqrt(dim(data)[2]))*((1/sqrt(dim(data)[1]-1)+1/sqrt(dim(data)[2])))^(1/3)
+        new_r__i<-sum(RMTstat::ptw(q,beta = 1,lower.tail = F)<0.05)
+
+        for (l in c(i+1):length(r)){
+          r[l]<-c(new_r__i-c(l-3))
+        }
       }
+      print(r)
       
       # provide initial parititioning of the observations
       s <- initial_clustering(data, k, i, init)

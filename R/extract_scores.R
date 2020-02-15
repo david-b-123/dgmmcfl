@@ -73,7 +73,7 @@ extract_scores <- function(data, model.fit,method="dgmm.cfl",plot=F){
   
   if (method=="dgmm.hmcfl"){
     # PLOT DGMM.HMCFL
-    dgmm_plotting<- dgmm.hmcfl_model$fit
+    dgmm_plotting<- model.fit
     
     k<-dgmm_plotting$k
     r<-dgmm_plotting$r

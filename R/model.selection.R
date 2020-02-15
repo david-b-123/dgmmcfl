@@ -65,12 +65,11 @@ model_selection <- function (y, layers, g, seeds = 3, it = 50, eps = 0.001,
   
   if (layers == 2) {
     
-    r <- as.matrix(expand.grid(1 : pp, 1 : ppp))
-    r <- r[(r[, 1]) > (r[, 2]),, drop = FALSE]
+    r <- matrix(c(dim(y)[2]-1,dim(y)[2]-2),nrow=1)
     
     k <- 
-      do.call('rbind',lapply(c(1:3),function(A){
-        do.call('rbind',lapply(c(1:3),function(B){
+      do.call('rbind',lapply(c(1:4),function(A){
+        do.call('rbind',lapply(c(1:4),function(B){
           internal_k<-c(A,B)
           
           if (method=='dgmm'){

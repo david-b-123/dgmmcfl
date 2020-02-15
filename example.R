@@ -13,7 +13,7 @@ library(tsne)
 library(umap)
 
 # path_to : path to the "R" directory in github download
-path_to<-"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/dgmmcfl-master/R/"
+path_to<-"/home/davb/Documents/Samsung_T5/2019_11_21_Deep_Statistical_Models/test_code_all/dgmmcfl-master_v2/R/"
 
 
 
@@ -59,16 +59,13 @@ dataset_aim<-log2((1+raw_dataset_aim))
 phis<- dismay::dismay(data.frame(raw_dataset_aim),metric = "phi_s")
 pearson<- cor(data.frame(dataset_aim))
 spearman<- cor(data.frame(dataset_aim),method = "spearman")
-euclidean<- dist(t(data.frame(dataset_aim)),diag = T,upper = T)
 
-phi_results<-eigen(phis)$vectors[,c(1:5)]
-pea_results<-eigen(pearson)$vectors[,c(1:5)]
-spe_results<-eigen(spearman)$vectors[,c(1:5)]
-euc_results<-eigen(euclidean)$vectors[,c(1:5)]
+phi_results<-eigen(phis)$vectors[,c(1:10)]
+pea_results<-eigen(pearson)$vectors[,c(1:10)]
+spe_results<-eigen(spearman)$vectors[,c(1:10)]
 
 # DGMM methods requires a dataframe
-y<-data.frame(phi_results,pea_results,spe_results,euc_results)
-
+y<-data.frame(phi_results,pea_results,spe_results)
 # These methods take a long time to grid search the parameter space to find the optimal model, based on BIC.
 # If taking too long, set complete==F, this grid searches naively over a SMALLER model parameter space
 
@@ -77,69 +74,21 @@ y<-data.frame(phi_results,pea_results,spe_results,euc_results)
 
 # Run DGMM - THIS MODEL CANNOT BE VISUALISED
 # Possible Layers = {1,2,3}
-dgmm_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 1,it = 1,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm',scale = T)
+dgmm_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm',scale = T)
+print(adjustedRandIndex(dgmm_model$fit$s[,1],labels))
 
 # RUN DGMM-CFL - ALL LAYERS CAN BE VISUALISED 
 # Possible Layers = {2,3,4}
-dgmm.cfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 1,it = 1,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.cfl',scale = T)
+dgmm.cfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.cfl',scale = T)
+print(adjustedRandIndex(dgmm.cfl_model$fit$clusters,labels))
 
 # RUN DGMM-ICFL - ONLY FIRST LAYER CAN BE VISUALISED
 # Possible Layers = {2,3,4}
 dgmm.icfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.icfl',scale = T)
+print(adjustedRandIndex(dgmm.icfl_model$fit$clusters,labels))
 
 # RUN DGMM-HMCFL - ONLY FIRST LAYER CAN BE VISUALISED
 # Possible Layers = {2,3,4}
 dgmm.hmcfl_model<-model_selection(y,layers = 2,g = length(unique(labels)),seeds = 10,it = 150,eps = 10E-4,criterion = "BIC",complete = F,method = 'dgmm.hmcfl',scale = T)
-
-
-# The above methods iterate over all dimensions of the latent factor scores to find the best BIC fit.
-# Thus, it is possible to receive a plotting dimension of 1, which is of course unsuitable
-
-# To plot the last layer onto two dimensions, set the following:
-# r = c(R1, 2) for 2 layers
-# r = c(R1, R2, 2) for 3 layers
-# r = c(R1, R2, R3, 2) for 4 layers
-
-# See below for an implementation
-
-bic.best <- Inf
-aic.best <- Inf
-
-seed_setting=100
-K1=3
-R1=8
-
-# Run to completion
-for (k1 in 1:K1){ # iterate from 1 to 3 mixtures
-  for (r1 in 3:R1){ # iterate from 3 to 7 - cannot work on a dataset with 3 or less dimensions
-    for (seed in 1:seed_setting){ # run EM algorithm - it does not guarantee global optima, and so the best BIC will be chosen
-      
-      print(paste("Seed: ",seed,"/",seed_setting, "   | | |   ","Mixture models searched: ",k1,"/",K1,"   | | |   ","Latent dimensions searched: ",r1-2,"/",R1-2,  sep=""))
-      set.seed(seed)
-      out <- try(deepgmm_mcfa(y,layers = 2,k = c(k1,length(unique(labels))),r = c(r1,2),it = 150,eps = 10E-5,method = "dgmm.cfl",scale = T),silent=F)
-      
-      if (!is.character(out)) {
-        if (out$bic < bic.best) {
-          out.best <- out
-          bic.best <- out$bic
-          
-          par(mfcol=c(1,2))
-          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with True Labels")
-          plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with Predicted labels")
-
-        }
-        
-      }
-    }
-  }
-}
-
-
-# For comparison
-par(mfrow=c(2,2))
-plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(labels),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with True Labels")
-plot(data.frame(out.best$factor_scores[[2]]),col=as.factor(out.best$clusters),xlab="Score 1", ylab="Score 2",main="DGMM-CFL with Predicted labels")
-plot(umap::umap(y)$layout,main="UMAP with True Labels",col=as.factor(labels),xlab="Score 1", ylab="Score 2")
-plot(tsne::tsne(y),main="tSNE with True Labels",col=as.factor(labels),xlab="Score 1", ylab="Score 2") # try with different perplexity scores
-
+print(adjustedRandIndex(dgmm.hmcfl_model$fit$clusters,labels))
 
