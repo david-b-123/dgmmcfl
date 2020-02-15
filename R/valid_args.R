@@ -25,7 +25,7 @@ if (!is.numeric(layers)) {
 
 if (!(layers %in% c(1, 2, 3, 4))) {
 
-  stop("Only upto three layers are allowed.")
+  stop("Only upto four layers are allowed.")
 }
 
 # k
